@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Carta Azul</title>
+
+<style>
+
+/* =========================================================
+   BASE
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+    background: #010508;
+    color: #d8c9a5;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+
+/* =========================================================
+   OCÉANO / CIELO
+========================================================= */
+
+.ocean {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 30%,
+            #102b35 0%,
+            #071923 32%,
+            #030c13 67%,
+            #010306 100%
+        );
+}
+
+
+/* Oscuridad de los bordes */
+
+.ocean::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 28%,
+            rgba(0,0,0,.22) 55%,
+            rgba(0,0,0,.82) 100%
+        );
+
+    z-index: 50;
+}
+
+
+/* =========================================================
+   ESTRELLAS
+========================================================= */
+
+.stars {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+
+/*
+   Las estrellas se generan mediante JavaScript.
+   Cada una tiene tamaño, posición y brillo diferente.
+*/
+
+.star {
+    position: absolute;
+
+    width: var(--size);
+    height: var(--size);
+
+    left: var(--x);
+    top: var(--y);
+
+    border-radius: 50%;
+
+    background: #f4f0d8;
+
+    opacity: var(--opacity);
+
+    box-shadow:
+        0 0 var(--glow) rgba(235,240,220,.7);
+
+    animation:
+        starTwinkle var(--duration) ease-in-out infinite;
+
+    animation-delay: var(--delay);
+}
+
+
+.star.large {
+    width: 3px;
+    height: 3px;
+}
+
+
+@keyframes starTwinkle {
+
+    0%,
+    100% {
+        opacity: var(--opacity);
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: .15;
+        transform: scale(.65);
+    }
+}
+
+
+/* =========================================================
+   COMETA
+========================================================= */
+
+.comet {
+    position: absolute;
+
+    width: 5px;
+    height: 5px;
+
+    top: 15%;
+    left: -10%;
+
+    border-radius: 50%;
+
+    background: #fff9d9;
+
+    box-shadow:
+        0 0 8px #fff,
+        0 0 18px rgba(220,235,210,.8);
+
+    opacity: 0;
+
+    z-index: 3;
+
+    animation: cometFlight 14s linear infinite;
+}
+
+
+.comet::before {
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+    height: 2px;
+
+    right: 3px;
+    top: 2px;
+
+    transform-origin: right center;
+
+    transform: rotate(-5deg);
+
+    background:
+        linear-gradient(
+            to left,
+            rgba(235,240,215,.8),
+            rgba(180,205,195,.25),
+            transparent
+        );
+
+    filter: blur(1px);
+}
+
+
+@keyframes cometFlight {
+
+    0% {
+        left: -15%;
+        top: 18%;
+        opacity: 0;
+        transform: rotate(0deg);
+    }
+
+    8% {
+        opacity: .9;
+    }
+
+    35% {
+        opacity: .9;
+    }
+
+    48% {
+        left: 58%;
+        top: 35%;
+        opacity: 0;
+    }
+
+    100% {
+        left: 58%;
+        top: 35%;
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   LUNA
+========================================================= */
+
+.moon {
+    position: absolute;
+
+    width: 105px;
+    height: 105px;
+
+    left: 72%;
+    top: 10%;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 35% 32%,
+            #fffef1 0%,
+            #e8e2c5 58%,
+            #a7a28e 100%
+        );
+
+    box-shadow:
+        0 0 20px rgba(245,240,210,.5),
+        0 0 55px rgba(205,220,210,.25),
+        0 0 110px rgba(180,205,210,.12);
+
+    animation: moonGlow 7s ease-in-out infinite alternate;
+
+    z-index: 2;
+}
+
+
+@keyframes moonGlow {
+
+    from {
+        box-shadow:
+            0 0 20px rgba(245,240,210,.35),
+            0 0 55px rgba(205,220,210,.18),
+            0 0 110px rgba(180,205,210,.08);
+    }
+
+    to {
+        box-shadow:
+            0 0 35px rgba(245,240,210,.6),
+            0 0 80px rgba(205,220,210,.3),
+            0 0 140px rgba(180,205,210,.15);
+    }
+}
+
+
+/* =========================================================
+   NUBES
+========================================================= */
+
+.cloud {
+    position: absolute;
+
+    width: 380px;
+    height: 75px;
+
+    top: 17%;
+    left: 56%;
+
+    background: rgba(2,8,13,.58);
+
+    border-radius: 50%;
+
+    filter: blur(15px);
+
+    z-index: 4;
+
+    animation: cloudDrift 24s ease-in-out infinite alternate;
+}
+
+
+.cloud::before,
+.cloud::after {
+    content: "";
+
+    position: absolute;
+
+    background: inherit;
+
+    border-radius: 50%;
+}
+
+
+.cloud::before {
+    width: 180px;
+    height: 90px;
+
+    left: 40px;
+    top: -35px;
+}
+
+
+.cloud::after {
+    width: 210px;
+    height: 100px;
+
+    right: 20px;
+    top: -45px;
+}
+
+
+@keyframes cloudDrift {
+
+    from {
+        transform: translateX(-20px);
+    }
+
+    to {
+        transform: translateX(80px);
+    }
+}
+
+
+/* =========================================================
+   MAR
+========================================================= */
+
+.sea {
+    position: absolute;
+
+    left: -5%;
+    bottom: -5%;
+
+    width: 110%;
+    height: 52%;
+
+    overflow: hidden;
+
+    background:
+
+        /* reflejos */
+
+        radial-gradient(
+            ellipse at 25% 20%,
+            rgba(80,130,140,.14),
+            transparent 15%
+        ),
+
+        radial-gradient(
+            ellipse at 70% 30%,
+            rgba(100,145,150,.1),
+            transparent 17%
+        ),
+
+        /* textura */
+
+        repeating-radial-gradient(
+            ellipse at 50% 100%,
+            transparent 0px,
+            transparent 14px,
+            rgba(65,110,120,.08) 15px,
+            transparent 18px
+        ),
+
+        linear-gradient(
+            to bottom,
+            #092632,
+            #04161f 48%,
+            #02080d 100%
+        );
+
+    z-index: 5;
+}
+
+
+/*
+   Capa de pequeñas ondulaciones.
+*/
+
+.sea::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+
+        repeating-linear-gradient(
+            175deg,
+            transparent 0px,
+            transparent 11px,
+            rgba(105,145,150,.045) 12px,
+            transparent 14px
+        ),
+
+        repeating-linear-gradient(
+            4deg,
+            transparent 0px,
+            transparent 18px,
+            rgba(120,160,165,.035) 19px,
+            transparent 21px
+        );
+
+    opacity: .88;
+
+    animation: waterTexture 13s linear infinite;
+}
+
+
+@keyframes waterTexture {
+
+    from {
+        background-position:
+            0 0,
+            0 0;
+    }
+
+    to {
+        background-position:
+            180px 30px,
+            -200px 40px;
+    }
+}
+
+
+/* =========================================================
+   OLAS
+========================================================= */
+
+.wave {
+    position: absolute;
+
+    left: -10%;
+
+    width: 120%;
+    height: 170px;
+
+    border-radius: 50% 50% 0 0;
+
+    border-top:
+        1px solid rgba(110,155,160,.15);
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(13,61,73,.45),
+            rgba(2,17,24,.85)
+        );
+
+    animation:
+        waveMotion 9s ease-in-out infinite;
+}
+
+
+.wave.one {
+    bottom: 52%;
+}
+
+
+.wave.two {
+    bottom: 33%;
+
+    left: -17%;
+
+    opacity: .7;
+
+    animation-duration: 12s;
+    animation-delay: -3s;
+}
+
+
+.wave.three {
+    bottom: 10%;
+
+    opacity: .55;
+
+    animation-duration: 15s;
+    animation-delay: -7s;
+}
+
+
+@keyframes waveMotion {
+
+    0%,
+    100% {
+        transform:
+            translateX(-3%)
+            rotate(1deg);
+    }
+
+    50% {
+        transform:
+            translateX(3%)
+            rotate(-1deg);
+    }
+}
+
+
+/* =========================================================
+   PEQUEÑOS REFLEJOS DEL AGUA
+========================================================= */
+
+.water-glint {
+    position: absolute;
+
+    height: 1px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            to right,
+            transparent,
+            rgba(150,190,195,.22),
+            transparent
+        );
+
+    animation: glint 6s ease-in-out infinite;
+}
+
+
+.g1 {
+    width: 150px;
+    top: 28%;
+    left: 14%;
+}
+
+
+.g2 {
+    width: 220px;
+    top: 42%;
+    left: 58%;
+
+    animation-delay: -2s;
+}
+
+
+.g3 {
+    width: 110px;
+    top: 57%;
+    left: 32%;
+
+    animation-delay: -4s;
+}
+
+
+.g4 {
+    width: 180px;
+    top: 70%;
+    left: 75%;
+
+    animation-delay: -1s;
+}
+
+
+@keyframes glint {
+
+    0%,
+    100% {
+        opacity: .05;
+        transform: scaleX(.5);
+    }
+
+    50% {
+        opacity: .5;
+        transform: scaleX(1);
+    }
+}
+
+
+/* =========================================================
+   BARCO
+========================================================= */
+
+.ship-wrapper {
+
+    position: absolute;
+
+    left: -220px;
+    top: 55%;
+
+    width: 190px;
+    height: 137px;
+
+    z-index: 12;
+
+    animation:
+        shipArrival 10s cubic-bezier(.22,.61,.36,1) forwards,
+        shipFloat 4s ease-in-out 10s infinite;
+}
+
+
+@keyframes shipArrival {
+
+    0% {
+        left: -220px;
+        opacity: 0;
+        transform: translateX(0) scale(.72);
+    }
+
+    10% {
+        opacity: .85;
+    }
+
+    75% {
+        left: 54%;
+        transform: translateX(-50%) scale(.72);
+    }
+
+    100% {
+        left: 54%;
+        transform: translateX(-50%) scale(.72);
+        opacity: .88;
+    }
+}
+
+
+@keyframes shipFloat {
+
+    0%,
+    100% {
+        transform:
+            translateX(-50%)
+            translateY(0)
+            rotate(-1deg)
+            scale(.72);
+    }
+
+    50% {
+        transform:
+            translateX(-50%)
+            translateY(-6px)
+            rotate(1.5deg)
+            scale(.72);
+    }
+}
+
+
+.ship {
+    position: relative;
+
+    width: 250px;
+    height: 170px;
+
+    filter:
+        drop-shadow(0 15px 12px rgba(0,0,0,.8));
+}
+
+
+.hull {
+    position: absolute;
+
+    width: 230px;
+    height: 55px;
+
+    bottom: 25px;
+    left: 10px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #4a3a2a 0%,
+            #25231f 45%,
+            #0a0d0e 100%
+        );
+    box-shadow:
+        inset 0 5px 8px rgba(112,83,48,.28),
+        0 4px 12px rgba(0,0,0,.5);
+
+    clip-path:
+        polygon(
+            0 0,
+            100% 0,
+            84% 70%,
+            70% 100%,
+            25% 100%,
+            10% 70%
+        );
+}
+
+
+.mast {
+    position: absolute;
+
+    width: 6px;
+    height: 140px;
+
+    left: 122px;
+    bottom: 65px;
+
+    background:
+        linear-gradient(
+            to right,
+            #171b1b,
+            #4a4030,
+            #111616
+        );
+}
+
+
+.sail {
+    position: absolute;
+
+    left: 128px;
+    bottom: 92px;
+
+    width: 85px;
+    height: 95px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6d6048 0%,
+            #343c3b 48%,
+            #101516 100%
+        );
+    box-shadow: inset -4px -5px 10px rgba(0,0,0,.45);
+
+    clip-path:
+        polygon(
+            0 0,
+            100% 75%,
+            0 100%
+        );
+}
+
+
+.sail.small {
+    left: 45px;
+    bottom: 90px;
+
+    width: 78px;
+    height: 75px;
+
+    transform: scaleX(-1);
+
+    opacity: .8;
+}
+
+
+.flag {
+    position: absolute;
+
+    top: 28px;
+    left: 128px;
+
+    width: 45px;
+    height: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7d6b43,
+            #332d22
+        );
+
+    clip-path:
+        polygon(
+            0 0,
+            100% 35%,
+            70% 100%,
+            0 70%
+        );
+}
+
+
+/* =========================================================
+   BOTÓN
+========================================================= */
+
+.open-message {
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 12%;
+
+    transform:
+        translateX(-50%)
+        translateY(20px);
+
+    z-index: 200;
+
+    padding:
+        13px 28px;
+
+    border:
+        1px solid rgba(190,180,145,.3);
+
+    background:
+        rgba(3,10,14,.5);
+
+    color:
+        #c7b995;
+
+    font-family:
+        Georgia,
+        serif;
+
+    letter-spacing: 3px;
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+    opacity:  0;
+
+    pointer-events:  none;
+
+    animation:
+         buttonAppear 1s ease 15s forwards;
+
+    transition:
+        background .3s,
+        color .3s,
+        border .3s;
+}
+
+
+@keyframes buttonAppear {
+
+    from {
+        opacity: 0;
+        transform:
+            translateX(-50%)
+            translateY(25px);
+    }
+
+    to {
+        opacity: .75;
+        transform:
+            translateX(-50%)
+            translateY(0);
+
+    }
+}
+
+
+.open-message:hover {
+
+    opacity: 1;
+
+    color: #eee4c8;
+
+    border-color:
+        rgba(220,210,180,.55);
+
+    background:
+        rgba(80,70,50,.12);
+}
+
+
+/* =========================================================
+   CARTA (scroll continuo, colores del océano)
+========================================================= */
+
+.letter-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(1,5,8,.92);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.2s ease;
+}
+
+.letter-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.letter {
+    position: relative;
+    width: min(720px, 94vw);
+    height: min(740px, 88vh);
+    overflow: hidden;
+    color: #d8c9a5;
+
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(40,95,110,.32), transparent 62%),
+        radial-gradient(ellipse at 50% 100%, rgba(13,61,73,.22), transparent 60%),
+        linear-gradient(to bottom, #092632, #04161f 52%, #02080d);
+
+    border: 1px solid rgba(190,180,145,.28);
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.75),
+        0 0 70px rgba(80,130,140,.1),
+        inset 0 0 55px rgba(0,0,0,.4);
+
+    transform: translateY(50px) scale(.95);
+    transition: transform 1.1s cubic-bezier(.2,.8,.2,1);
+}
+
+.letter-overlay.open .letter {
+    transform: translateY(0) scale(1);
+}
+
+/* Filo dorado interior */
+.letter::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(190,180,145,.13);
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Barra de progreso */
+.progress {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: rgba(190,180,145,.08);
+    z-index: 15;
+}
+
+.progress span {
+    display: block;
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(to right, #6f9ea3, #d8c9a5);
+    box-shadow: 0 0 8px rgba(216,201,165,.5);
+}
+
+/* Zona con scroll */
+.scroll {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 62px 62px 90px;
+    outline: none;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(190,180,145,.35) transparent;
+
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 34px, #000 calc(100% - 56px), transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 34px, #000 calc(100% - 56px), transparent 100%);
+}
+
+.scroll::-webkit-scrollbar { width: 6px; }
+.scroll::-webkit-scrollbar-track { background: transparent; }
+.scroll::-webkit-scrollbar-thumb {
+    background: rgba(190,180,145,.3);
+    border-radius: 3px;
+}
+.scroll::-webkit-scrollbar-thumb:hover { background: rgba(190,180,145,.55); }
+
+/* Páginas -> secciones continuas */
+.page {
+    position: relative;
+}
+
+.page + .page {
+    margin-top: 80px;
+    padding-top: 80px;
+}
+
+/* Separador: línea con luz de estrella */
+.page + .page::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 50%;
+    width: 140px; height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(to right, transparent, rgba(190,180,145,.55), transparent);
+}
+
+.page + .page::after {
+    content: "";
+    position: absolute;
+    top: -2px; left: 50%;
+    width: 5px; height: 5px;
+    margin-left: -2.5px;
+    border-radius: 50%;
+    background: #f4f0d8;
+    box-shadow: 0 0 10px rgba(235,240,220,.8);
+}
+
+/* Texto */
+.letter h1 {
+    text-align: center;
+    font-weight: normal;
+    font-size: clamp(26px, 5vw, 40px);
+    letter-spacing: 1px;
+    color: #eee4c8;
+    text-shadow: 0 0 26px rgba(220,210,170,.18);
+    margin-bottom: 12px;
+}
+
+.date {
+    text-align: right;
+    font-size: 13px;
+    font-style: italic;
+    color: #86abae;
+    margin-bottom: 34px;
+}
+
+.letter-content p {
+    font-size: 18px;
+    line-height: 1.85;
+    white-space: pre-line;
+    text-align: left;
+    margin-bottom: 1.5em;
+}
+
+.signature {
+    text-align: right;
+    font-size: 20px;
+    font-style: italic;
+    color: #c7b995;
+    margin-top: 34px;
+}
+
+/* Aparición suave al hacer scroll */
+.reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity .9s ease, transform .9s ease;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* Pista de scroll */
+.scroll-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    z-index: 10;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #c7b995;
+    pointer-events: none;
+    transition: opacity .6s ease;
+    animation: hintBob 2.6s ease-in-out infinite;
+}
+
+.scroll-hint.hidden { opacity: 0; }
+
+@keyframes hintBob {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: .45; }
+    50%      { transform: translateX(-50%) translateY(5px); opacity: .85; }
+}
+
+/* Cerrar */
+.close {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    z-index: 20;
+    width: 35px;
+    height: 35px;
+    border: none;
+    background: transparent;
+    color: #c7b995;
+    font-size: 28px;
+    cursor: pointer;
+    opacity: .6;
+    transition: transform .3s, opacity .3s, color .3s;
+}
+
+.close:hover {
+    transform: rotate(90deg);
+    opacity: 1;
+    color: #eee4c8;
+}
+
+.close:focus-visible,
+.scroll:focus-visible {
+    outline: 1px solid rgba(216,201,165,.5);
+    outline-offset: -4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .scroll { scroll-behavior: auto; }
+    .scroll-hint { animation: none; }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .moon {
+        width: 76px;
+        height: 76px;
+        left: 65%;
+    }
+
+    .ship-wrapper {
+        transform: scale(.7);
+    }
+
+    .letter {
+        width: 94vw;
+        height: 86vh;
+    }
+
+    .scroll {
+        padding: 54px 26px 80px;
+    }
+
+    .letter-content p {
+        font-size: 16px;
+        line-height: 1.75;
+    }
+
+    .open-message {
+        bottom: 8%;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     ESCENA
+====================================================== -->
+
+<main class="ocean">
+
+    <div class="stars" id="stars"></div>
+
+    <div class="comet"></div>
+
+    <div class="moon"></div>
+
+    <div class="cloud"></div>
+
+
+    <!-- =================================================
+         MAR
+    ================================================== -->
+
+    <div class="sea">
+
+        <div class="wave one"></div>
+
+        <div class="wave two"></div>
+
+        <div class="wave three"></div>
+
+        <div class="water-glint g1"></div>
+        <div class="water-glint g2"></div>
+        <div class="water-glint g3"></div>
+        <div class="water-glint g4"></div>
+
+    </div>
+
+
+    <!-- =================================================
+         BARCO
+    ================================================== -->
+
+    <div class="ship-wrapper">
+
+        <div class="ship">
+
+            <div class="mast"></div>
+
+            <div class="sail"></div>
+
+            <div class="sail small"></div>
+
+            <div class="flag"></div>
+
+            <div class="hull"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         BOTÓN
+    ================================================== -->
+
+    <button
+        class="open-message"
+        id="openMessage"
+        type="button"
+        aria-label="Abrir mensaje">
+
+        ABRIR MENSAJE
+
+    </button>
+
+</main>
+
+
+<!-- =====================================================
+     CARTA
+====================================================== -->
+
+<div
+    class="letter-overlay"
+    id="letterOverlay">
+
+
+    <article class="letter">
+
+
+        <button
+            class="close"
+            id="closeLetter">
+
+            ×
+
+        </button>
+
+
+        <div class="progress"><span id="progressBar"></span></div>
+
+        <div class="pages scroll" id="letterScroll" tabindex="0">
+
+
+            <!-- =========================================
+                 PÁGINA 1 · MENSAJE PARA ISABELLA
+            ========================================== -->
+
+            <section class="page" lang="pt">
+
+                <h1>
+                    Isabella
+                </h1>
+
+                <div class="date">
+                    1 de outubro
+                </div>
+
+                <div class="letter-content">
+
+Oi, Isabella, sei que ainda não faz muito tempo que a gente começou a conversar e eu disse pra gente ir devagar, mas, sinceramente, esses últimos dias me senti tão à vontade com você.
+
+Sinto que você me deu tantos mimos lindos: seu tempo, as playlists, as cartas, os reels, a atenção que você dedica a mim e às minhas músicas, as mensagens de áudio, os vídeos e as fotos que você me manda... Isso me fez querer fazer algo pra você.
+
+Pra ser sincero, nunca tinha vivido algo tão lindo assim, a ponto de me sentir estranho, mas estranho no bom sentido, hahaha. Sou uma pessoa sentimental, mas nunca tinha recebido algo sentimental de alguém; nunca ninguém tinha me dado atenção e carinho simplesmente por eu ser quem sou.
+
+Saber que essa pessoa que faz isso é alguém tão boa, forte, carinhosa e incrível me encanta; quero continuar te conhecendo, quero que você faça mais parte da minha vida e dos meus dias. Não quero apressar as coisas, pois sinto que o que vier a acontecer precisa do seu tempo, porque quero que seja algo forte, de dedicação, atenção e muito carinho.
+
+Sei que não é uma carta escrita à mão, minha caligrafia não é das melhores e minha câmera também não, mas mesmo assim gosto de fazer esse tipo de coisa.
+
+São coisas que me fazem lembrar de você; estamos muito distantes, mas muito próximos no coração.
+
+Obrigado por me amar tanto; me sinto superamado e quero retribuir ainda mais o seu esforço e o carinho que você tem por mim.
+
+Muito obrigado, Isabella.
+
+                </div>
+
+                <div class="signature">
+                    — José Andrés
+                </div>
+
+            </section>
+
+
+
+        </div>
+
+
+        <div class="scroll-hint" id="scrollHint">DESLIZA</div>
+
+
+    </article>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   GENERAR ESTRELLAS ALEATORIAS
+========================================================= */
+
+const starsContainer =
+    document.getElementById("stars");
+
+const starCount = 115;
+
+for (let i = 0; i < starCount; i++) {
+
+    const star =
+        document.createElement("div");
+
+    star.className = "star";
+
+
+    /*
+       Algunas estrellas son muy pequeñas,
+       algunas ligeramente grandes.
+    */
+
+    const size =
+        Math.random() < .88
+            ? Math.random() * 1.5 + .5
+            : Math.random() * 2 + 2;
+
+
+    const opacity =
+        Math.random() * .65 + .2;
+
+
+    const glow =
+        Math.random() * 5 + 1;
+
+
+    star.style.setProperty(
+        "--size",
+        `${size}px`
+    );
+
+
+    star.style.setProperty(
+        "--x",
+        `${Math.random() * 100}%`
+    );
+
+
+    star.style.setProperty(
+        "--y",
+        `${Math.random() * 68}%`
+    );
+
+
+    star.style.setProperty(
+        "--opacity",
+        opacity
+    );
+
+
+    star.style.setProperty(
+        "--glow",
+        `${glow}px`
+    );
+
+
+    star.style.setProperty(
+        "--duration",
+        `${Math.random() * 5 + 2}s`
+    );
+
+
+    star.style.setProperty(
+        "--delay",
+        `${Math.random() * 6}s`
+    );
+
+
+    if (size > 2.5) {
+
+        star.classList.add("large");
+
+    }
+
+
+    starsContainer.appendChild(star);
+}
+
+
+/* =========================================================
+   CARTA
+========================================================= */
+
+const openMessage =
+    document.getElementById("openMessage");
+
+const letterOverlay =
+    document.getElementById("letterOverlay");
+
+const closeLetter =
+    document.getElementById("closeLetter");
+
+
+/* =========================================================
+   APERTURA AUTOMÁTICA DE LA CARTA
+   ========================================================= */
+
+setTimeout(() => {
+    letterOverlay.classList.add("open");
+}, 15000);
+
+
+
+
+openMessage.addEventListener(
+    "click",
+    (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        letterOverlay.classList.add("open");
+    }
+);
+
+
+closeLetter.addEventListener(
+    "click",
+    (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        letterOverlay.classList.remove("open");
+    }
+);
+
+
+letterOverlay.addEventListener(
+    "click",
+    event => {
+
+        if (
+            event.target ===
+            letterOverlay
+        ) {
+
+            letterOverlay.classList.remove("open");
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Escape") {
+
+            letterOverlay.classList.remove("open");
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CARTA CON SCROLL
+========================================================= */
+
+const scrollBox   = document.getElementById("letterScroll");
+const progressBar = document.getElementById("progressBar");
+const scrollHint  = document.getElementById("scrollHint");
+
+
+/* Separar el texto en estrofas (párrafos) */
+
+document.querySelectorAll(".letter-content").forEach(box => {
+
+    const stanzas = box.textContent
+        .trim()
+        .split(/\n\s*\n/);
+
+    box.textContent = "";
+
+    stanzas.forEach(text => {
+        const p = document.createElement("p");
+        p.textContent = text
+            .split("\n")
+            .map(line => line.trim())
+            .join("\n");
+        p.classList.add("reveal");
+        box.appendChild(p);
+    });
+});
+
+document.querySelectorAll(".letter h1, .date, .signature")
+    .forEach(el => el.classList.add("reveal"));
+
+
+/* Aparición al desplazarse */
+
+const observer = new IntersectionObserver(
+    entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                observer.unobserve(entry.target);
+            }
+        });
+    },
+    { root: scrollBox, threshold: .25 }
+);
+
+document.querySelectorAll(".reveal")
+    .forEach(el => observer.observe(el));
+
+
+/* Progreso y pista */
+
+function updateProgress() {
+
+    const max = scrollBox.scrollHeight - scrollBox.clientHeight;
+
+    const pct = max > 0
+        ? (scrollBox.scrollTop / max) * 100
+        : 0;
+
+    progressBar.style.width = pct + "%";
+
+    scrollHint.classList.toggle(
+        "hidden",
+        scrollBox.scrollTop > 30
+    );
+}
+
+scrollBox.addEventListener("scroll", updateProgress);
+
+
+/* Al abrir: volver al inicio y enfocar para usar teclado */
+
+new MutationObserver(() => {
+
+    if (letterOverlay.classList.contains("open")) {
+
+        scrollBox.style.scrollBehavior = "auto";
+        scrollBox.scrollTop = 0;
+        scrollBox.style.scrollBehavior = "";
+
+        updateProgress();
+
+        setTimeout(() => scrollBox.focus({ preventScroll: true }), 400);
+    }
+
+}).observe(letterOverlay, {
+    attributes: true,
+    attributeFilter: ["class"]
+});
+
+updateProgress();
+
+</script>
+
+</body>
+</html>
